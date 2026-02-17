@@ -21,6 +21,8 @@ exports.createOrder = async (req, res) => {
 };
 
 exports.verifyPayment = (req, res) => {
+  console.log("VERIFY PAYMENT HIT", req.body); // 👈 DEBUG
+
   const {
     razorpay_order_id,
     razorpay_payment_id,
@@ -30,8 +32,7 @@ exports.verifyPayment = (req, res) => {
     phone,
   } = req.body;
 
-  const body =
-    razorpay_order_id + "|" + razorpay_payment_id;
+  const body = razorpay_order_id + "|" + razorpay_payment_id;
 
   const expectedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -39,21 +40,34 @@ exports.verifyPayment = (req, res) => {
     .digest("hex");
 
   if (expectedSignature !== razorpay_signature) {
+    console.error("SIGNATURE MISMATCH");
     return res.status(400).json({ success: false });
   }
 
   const sql = `
     INSERT INTO registrations
-    (name, email, phone, payment_id, amount, status)
-    VALUES (?, ?, ?, ?, ?, ?)
+    (name, email, phone, payment_id, order_id, amount, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(
     sql,
-    [name, email, phone, razorpay_payment_id, 5, "PAID"],
-    err => {
-      if (err)
+    [
+      name,
+      email,
+      phone,
+      razorpay_payment_id,
+      razorpay_order_id,
+      5,
+      "PAID"
+    ],
+    (err, result) => {
+      if (err) {
+        console.error("DB INSERT ERROR:", err);
         return res.status(500).json({ success: false });
+      }
+
+      console.log("DB INSERT SUCCESS, ID:", result.insertId);
       res.json({ success: true });
     }
   );
