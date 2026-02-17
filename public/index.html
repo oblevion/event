@@ -2,9 +2,7 @@
 <html>
 <head>
   <title>Event Registration</title>
-  <script src="https://checkout.razorpay.com/v1/checkout.js">
-    const API_BASE = "https://event-608z.onrender.com";
-  </script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -20,6 +18,7 @@
 
 
 async function pay() {
+  const API_BASE = "https://event-608z.onrender.com";
   const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
   const phone = document.getElementById('phone').value;
