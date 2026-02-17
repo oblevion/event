@@ -15,44 +15,49 @@
 <button onclick="pay()">Pay Now</button>
 
 <script>
-
-
 async function pay() {
   const API_BASE = "https://event-608z.onrender.com";
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  const phone = document.getElementById('phone').value;
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const phone = document.getElementById("phone").value;
 
   const res = await fetch(`${API_BASE}/api/payment/create-order`, {
-    method: 'POST'
+    method: "POST",
   });
 
   const data = await res.json();
 
+  console.log("Create order response:", data); // DEBUG
+
   const options = {
-    key: data.key,
-    amount: data.amount,
-    currency: 'INR',
-    order_id: data.orderId,
+    key: data.key_id,                // ✅ FIX
+    amount: data.order.amount,       // ✅ FIX
+    currency: "INR",
+    order_id: data.order.id,         // ✅ FIX
+    name: "Event Registration",
+    description: "Event Ticket ₹5",
+
     handler: async function (response) {
       await fetch(`${API_BASE}/api/payment/verify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           razorpay_order_id: response.razorpay_order_id,
           razorpay_payment_id: response.razorpay_payment_id,
           razorpay_signature: response.razorpay_signature,
           name,
           email,
-          phone
-        })
+          phone,
+        }),
       });
 
       window.location.href = "success.html";
-    }
+    },
   };
 
-  new Razorpay(options).open();
+  const rzp = new Razorpay(options);
+  rzp.open();
 }
 </script>
 
