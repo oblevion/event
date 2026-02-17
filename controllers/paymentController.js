@@ -50,7 +50,7 @@ exports.verifyPayment = (req, res) => {
 
   db.query(
     sql,
-    [name, email, phone, razorpay_payment_id, 500, "PAID"],
+    [name, email, phone, razorpay_payment_id, 5, "PAID"],
     err => {
       if (err)
         return res.status(500).json({ success: false });
