@@ -3,8 +3,8 @@ const db = require("../config/db");
 exports.createRegistration = (data, callback) => {
   const sql = `
     INSERT INTO registrations
-    (order_id,name, email, phone, payment_id, amount, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    (id,name, email, phone, payment_id, amount, status)
+    VALUES (?, ?, ?, ?, ?, ?)
   `;
   db.query(sql, data, callback);
 };
