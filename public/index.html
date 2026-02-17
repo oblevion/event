@@ -2,7 +2,9 @@
 <html>
 <head>
   <title>Event Registration</title>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js">
+    const API_BASE = "https://event-608z.onrender.com";
+  </script>
 </head>
 <body>
 
@@ -15,32 +17,39 @@
 <button onclick="pay()">Pay Now</button>
 
 <script>
+
+
 async function pay() {
   const name = document.getElementById('name').value;
   const email = document.getElementById('email').value;
   const phone = document.getElementById('phone').value;
 
-  const res = await fetch('/create-order', { method: 'POST' });
+  const res = await fetch(`${API_BASE}/api/payment/create-order`, {
+    method: 'POST'
+  });
+
   const data = await res.json();
 
   const options = {
-    key: data.key_id,
-    amount: data.order.amount,
+    key: data.key,
+    amount: data.amount,
     currency: 'INR',
-    order_id: data.order.id,
-    handler: function (response) {
-      fetch('/verify-payment', {
+    order_id: data.orderId,
+    handler: async function (response) {
+      await fetch(`${API_BASE}/api/payment/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...response,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
           name,
           email,
           phone
         })
-      }).then(() => {
-        window.location = '/success.html';
       });
+
+      window.location.href = "success.html";
     }
   };
 
