@@ -9,9 +9,7 @@
 <table border="1" id="table"></table>
 
 <script>
-const API_BASE = "https://event-608z.onrender.com";
-
-fetch(`${API_BASE}/api/admin/registrations`)
+fetch("https://event-608z.onrender.com")
   .then(res => res.json())
   .then(data => {
     let html = `
@@ -22,7 +20,6 @@ fetch(`${API_BASE}/api/admin/registrations`)
         <th>Payment ID</th>
       </tr>
     `;
-
     data.forEach(r => {
       html += `
         <tr>
@@ -33,8 +30,11 @@ fetch(`${API_BASE}/api/admin/registrations`)
         </tr>
       `;
     });
-
     document.getElementById('table').innerHTML = html;
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Failed to load admin data");
   });
 </script>
 
