@@ -30,6 +30,8 @@ exports.createOrder = async (req, res) => {
 
 /* ================= VERIFY PAYMENT ================= */
 exports.verifyPayment = async (req, res) => {
+  console.log("VERIFY PAYMENT HIT");
+  console.log("BODY:", req.body);
   try {
     const {
       razorpay_order_id,
