@@ -9,7 +9,7 @@ exports.createOrder = async (req, res) => {
       currency: "INR",
       receipt: "event_receipt",
     });
-
+    console.log("KEY SENT:", process.env.RAZORPAY_KEY_ID);
     res.json({
   key: process.env.RAZORPAY_KEY_ID,
   orderId: order.id,
