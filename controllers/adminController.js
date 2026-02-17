@@ -1,4 +1,4 @@
-const db = require("../controllers/admin.controller");
+const db = require("../controllers/adminController");
 
 exports.getRegistrations = (req, res) => {
   db.query("SELECT * FROM registrations", (err, results) => {
